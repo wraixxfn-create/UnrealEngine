@@ -3,6 +3,7 @@
 #include "BaseProjectDoor.h"
 #include "Components/ChildActorComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Engine/StaticMesh.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Materials/MaterialInterface.h"
 #include "UObject/ConstructorHelpers.h"
@@ -58,4 +59,26 @@ void ABaseProjectMapBase::OnConstruction(const FTransform& Transform)
 
 	DoorComponent->SetRelativeLocation(DoorLocation);
 	DoorComponent->SetRelativeRotation(DoorRotation);
+	if (DoorStoneMaterial)
+	{
+		SetDoorStoneMaterial(DoorStoneMaterial);
+	}
+}
+
+void ABaseProjectMapBase::BeginPlay()
+{
+	Super::BeginPlay();
+	if (DoorStoneMaterial)
+	{
+		SetDoorStoneMaterial(DoorStoneMaterial);
+	}
+}
+
+void ABaseProjectMapBase::SetDoorStoneMaterial(UMaterialInterface* NewMaterial)
+{
+	DoorStoneMaterial = NewMaterial;
+	if (ABaseProjectDoor* Door = Cast<ABaseProjectDoor>(DoorComponent->GetChildActor()))
+	{
+		Door->SetStoneMaterial(NewMaterial);
+	}
 }

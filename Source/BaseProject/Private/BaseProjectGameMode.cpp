@@ -49,6 +49,6 @@ void ABaseProjectGameMode::InitGame(const FString& MapName, const FString& Optio
 		FActorSpawnParameters SpawnParameters;
 		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		World->SpawnActor<APlayerStart>(APlayerStart::StaticClass(),
-			FVector(-1500.0f, 0.0f, 96.0f), FRotator::ZeroRotator, SpawnParameters);
+			FVector(-4000.0f, 0.0f, 96.0f), FRotator::ZeroRotator, SpawnParameters);
 	}
 }
