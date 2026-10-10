@@ -5,6 +5,7 @@
 #include "BaseProjectMapBase.generated.h"
 
 class UChildActorComponent;
+class UMaterialInterface;
 class UStaticMeshComponent;
 class USceneComponent;
 
@@ -23,7 +24,12 @@ public:
 
 	virtual void OnConstruction(const FTransform& Transform) override;
 
+	UFUNCTION(BlueprintCallable, Category = "Map|Door")
+	void SetDoorStoneMaterial(UMaterialInterface* NewMaterial);
+
 protected:
+	virtual void BeginPlay() override;
+
 	UPROPERTY(VisibleAnywhere, Category = "Map")
 	TObjectPtr<USceneComponent> Root;
 
@@ -45,6 +51,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Map")
 	FLinearColor GroundColor = FLinearColor(0.20f, 0.36f, 0.18f);
+
+	/** Materiale persistente, propagato alla porta figlia nell'Editor e in Play. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map|Door")
+	TObjectPtr<UMaterialInterface> DoorStoneMaterial;
 
 	/** Posizione della porta sul terreno (cm, relativa al centro della mappa). */
 	UPROPERTY(EditAnywhere, Category = "Map|Door")

@@ -4,6 +4,10 @@ DerivedDataCache/
 Intermediate/
 Saved/
 
+# Python editor scripts and tests
+__pycache__/
+*.py[cod]
+
 # Per-user content
 Content/Developers/
 

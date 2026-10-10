@@ -1,4 +1,7 @@
-"""Create the editable StarterMap level for BaseProject in Unreal Editor."""
+"""Create the editable StarterMap and its monumental stone door in Unreal Editor."""
+
+import runpy
+from pathlib import Path
 
 import unreal
 
@@ -64,8 +67,8 @@ def _set_default_maps():
 
 
 def create_starter_map():
-    # Check the C++ class before creating a level, so a missing editor build does
-    # not leave behind an empty StarterMap asset.
+    # Check the C++ class before creating any assets, so a missing editor build
+    # does not leave behind an empty StarterMap or an unused stone material.
     map_base_class = unreal.load_class(None, MAP_BASE_CLASS_PATH)
     if map_base_class is None:
         raise RuntimeError(
@@ -74,6 +77,11 @@ def create_starter_map():
                 MAP_BASE_CLASS_PATH
             )
         )
+
+    # Resolve the sibling script independently of the Editor's working directory.
+    material_script = Path(__file__).resolve().with_name("CreateStoneMaterial.py")
+    material_helpers = runpy.run_path(str(material_script))
+    stone_material = material_helpers["create_stone_material"]()
 
     asset_library = unreal.EditorAssetLibrary
     level_library = unreal.EditorLevelLibrary
@@ -85,19 +93,25 @@ def create_starter_map():
         raise RuntimeError("Could not create map {}.".format(MAP_PACKAGE_PATH))
 
     actors = level_library.get_all_level_actors()
-
-    if not _has_actor(actors, map_base_class):
-        _spawn_actor(
-            map_base_class,
-            unreal.Vector(0.0, 0.0, 0.0),
-            unreal.Rotator(0.0, 0.0, 0.0),
-            "Map Base and Stone Gate",
+    map_bases = [actor for actor in actors if isinstance(actor, map_base_class)]
+    if not map_bases:
+        map_bases.append(
+            _spawn_actor(
+                map_base_class,
+                unreal.Vector(0.0, 0.0, 0.0),
+                unreal.Rotator(0.0, 0.0, 0.0),
+                "Map Base and Monumental Stone Gate",
+            )
         )
+    for map_base in map_bases:
+        # Preserve an artist's custom material on an existing map base.
+        if map_base.get_editor_property("door_stone_material") is None:
+            map_base.set_door_stone_material(stone_material)
 
     if not _has_actor(actors, unreal.PlayerStart):
         _spawn_actor(
             unreal.PlayerStart,
-            unreal.Vector(-1500.0, 0.0, 96.0),
+            unreal.Vector(-4000.0, 0.0, 96.0),
             unreal.Rotator(0.0, 0.0, 0.0),
             "Player Start",
         )
@@ -142,9 +156,10 @@ def create_starter_map():
 
     _set_default_maps()
     unreal.log(
-        "Created and saved {}.umap with the map base, stone gate, PlayerStart, "
-        "and lighting.".format(MAP_PACKAGE_PATH)
+        "Created and saved {}.umap with the monumental double-leaf stone gate, "
+        "rough stone material, PlayerStart, and lighting.".format(MAP_PACKAGE_PATH)
     )
 
 
-create_starter_map()
+if __name__ == "__main__":
+    create_starter_map()
