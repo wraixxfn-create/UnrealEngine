@@ -11,4 +11,6 @@ class BASEPROJECT_API ABaseProjectGameMode : public AGameModeBase
 
 public:
 	ABaseProjectGameMode();
+
+	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
 };

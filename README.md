@@ -9,7 +9,7 @@ Base C++ minimale e pronta da estendere per un progetto desktop in Unreal Engine
 - `ABaseProjectGameMode` come Game Mode predefinita;
 - personaggio C++ in prima persona con movimento, visuale e salto;
 - input per tastiera/mouse e gamepad;
-- rendering desktop con Lumen e Virtual Shadow Maps;
+- rendering desktop con Lumen e Virtual Shadow Maps; su Windows il progetto seleziona DirectX 12 e compila gli shader D3D12 SM6 richiesti;
 - configurazione iniziale di packaging;
 - cartelle `Content/Maps` e `Content/Blueprints` pronte per gli asset;
 - `.gitignore` adatto ai file generati da Unreal Engine.
@@ -31,7 +31,7 @@ Base C++ minimale e pronta da estendere per un progetto desktop in Unreal Engine
 5. Compila il target `BaseProjectEditor` in configurazione `Development Editor`.
 6. Avvia l'Editor e premi **Play**.
 
-Il progetto usa inizialmente la mappa template inclusa nell'engine, così può partire senza asset binari versionati. Prima di modificarla, salvala come nuova mappa in `Content/Maps` (per esempio `StarterMap`) e impostala in **Project Settings > Maps & Modes**.
+Il progetto usa inizialmente la mappa template inclusa nell'engine, così può partire senza asset binari versionati. Quando avvii **Play**, `ABaseProjectGameMode` aggiunge automaticamente il terreno, la porta monumentale in pietra e un punto di partenza se il livello non contiene già una base di mappa. In questo modo la scena è giocabile anche senza un file `.umap` nel repository. Per renderla modificabile e persistente nell'Editor, salvala in `Content/Maps` (per esempio `StarterMap`), trascina nel livello `ABaseProjectMapBase` da **Modes > All Classes** e impostala in **Project Settings > Maps & Modes**; il Game Mode non aggiungerà una seconda base quando ne trova già una.
 
 ### Build da riga di comando
 
@@ -52,9 +52,9 @@ Linux:
 ## Base di mappa e porta
 
 - `ABaseProjectMapBase` (`Source/BaseProject/Public/BaseProjectMapBase.h`): lastra di terreno quadrata con collisione. Il lato si imposta con `MapSizeMeters` (default 2000 m). Include la porta come attore figlio.
-- `ABaseProjectDoor` (`Source/BaseProject/Public/BaseProjectDoor.h`): porta con stipiti, architrave e anta incernierata. Si apre quando il personaggio entra nell'area di attivazione e si richiude quando esce.
+- `ABaseProjectDoor` (`Source/BaseProject/Public/BaseProjectDoor.h`): portale in pietra largo 9 m e alto 12 m, con stipiti a blocchi, chiave di volta e anta incernierata composta da grandi conci. Si apre quando il personaggio entra nell'area di attivazione e si richiude quando esce.
 
-Per usarle: compila il progetto, apri o crea una mappa in `Content/Maps`, trascina `ABaseProjectMapBase` nel livello (dalla finestra **Modes > All Classes**) e regola `MapSizeMeters`, `DoorLocation` e `DoorRotation` nei dettagli. La porta si può anche piazzare da sola come `ABaseProjectDoor`.
+In **Play** la base e la porta vengono create automaticamente dal Game Mode. Per editarle, crea una mappa in `Content/Maps`, trascina `ABaseProjectMapBase` nel livello (dalla finestra **Modes > All Classes**) e regola `MapSizeMeters`, `DoorLocation` e `DoorRotation` nei dettagli. La porta può anche essere piazzata da sola come `ABaseProjectDoor`.
 
 ## Comandi
 
