@@ -1,0 +1,13 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "5.8",
+	"Category": "Games",
+	"Description": "Base C++ project for Unreal Engine 5.8.3.",
+	"Modules": [
+		{
+			"Name": "BaseProject",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}
