@@ -49,6 +49,13 @@ Linux:
 
 `UE_ROOT` deve puntare alla cartella principale di Unreal Engine 5.8.3.
 
+## Base di mappa e porta
+
+- `ABaseProjectMapBase` (`Source/BaseProject/Public/BaseProjectMapBase.h`): lastra di terreno quadrata con collisione. Il lato si imposta con `MapSizeMeters` (default 2000 m). Include la porta come attore figlio.
+- `ABaseProjectDoor` (`Source/BaseProject/Public/BaseProjectDoor.h`): porta con stipiti, architrave e anta incernierata. Si apre quando il personaggio entra nell'area di attivazione e si richiude quando esce.
+
+Per usarle: compila il progetto, apri o crea una mappa in `Content/Maps`, trascina `ABaseProjectMapBase` nel livello (dalla finestra **Modes > All Classes**) e regola `MapSizeMeters`, `DoorLocation` e `DoorRotation` nei dettagli. La porta si può anche piazzare da sola come `ABaseProjectDoor`.
+
 ## Comandi
 
 | Azione | Tastiera/mouse | Gamepad |
