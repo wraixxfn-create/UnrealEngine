@@ -11,6 +11,7 @@ Base C++ minimale e pronta da estendere per un progetto desktop in Unreal Engine
 - input per tastiera/mouse e gamepad;
 - rendering desktop con Lumen e Virtual Shadow Maps; su Windows il progetto seleziona DirectX 12 e compila gli shader D3D12 SM6 richiesti;
 - configurazione iniziale di packaging;
+- generatore Python per creare nell'Editor la mappa modificabile `Content/Maps/StarterMap.umap`;
 - cartelle `Content/Maps` e `Content/Blueprints` pronte per gli asset;
 - `.gitignore` adatto ai file generati da Unreal Engine.
 
@@ -29,9 +30,10 @@ Base C++ minimale e pronta da estendere per un progetto desktop in Unreal Engine
 3. Se richiesto, seleziona **Switch Unreal Engine version...** e scegli l'installazione 5.8.3.
 4. Genera i file del progetto IDE dal menu contestuale del `.uproject`.
 5. Compila il target `BaseProjectEditor` in configurazione `Development Editor`.
-6. Avvia l'Editor e premi **Play**.
+6. Nell'Editor, esegui `Content/Python/CreateStarterMap.py` da **Tools > Execute Python Script** (oppure dal comando Python nell'Output Log).
+7. L'Editor salva `Content/Maps/StarterMap.umap` e la imposta come mappa di avvio e di gioco; quindi premi **Play**.
 
-Il progetto usa inizialmente la mappa template inclusa nell'engine, così può partire senza asset binari versionati. Quando avvii **Play**, `ABaseProjectGameMode` aggiunge automaticamente il terreno, la porta monumentale in pietra e un punto di partenza se il livello non contiene già una base di mappa. In questo modo la scena è giocabile anche senza un file `.umap` nel repository. Per renderla modificabile e persistente nell'Editor, salvala in `Content/Maps` (per esempio `StarterMap`), trascina nel livello `ABaseProjectMapBase` da **Modes > All Classes** e impostala in **Project Settings > Maps & Modes**; il Game Mode non aggiungerà una seconda base quando ne trova già una.
+Il `.umap` è un asset binario che deve essere serializzato da Unreal Editor: non è affidabile crearne uno scrivendo un file a mano. Per questo il repository include il generatore, ma non un `.umap` fittizio. La mappa generata contiene `ABaseProjectMapBase` (terreno e porta), `PlayerStart`, luce direzionale, luce ambientale e atmosfera. Se la mappa non viene impostata automaticamente, seleziona `StarterMap` in **Project Settings > Maps & Modes**. Fino alla generazione, il progetto continua a usare la mappa template dell'engine e `ABaseProjectGameMode` aggiunge in **Play** la base e il punto di partenza mancanti.
 
 ### Build da riga di comando
 
@@ -54,7 +56,7 @@ Linux:
 - `ABaseProjectMapBase` (`Source/BaseProject/Public/BaseProjectMapBase.h`): lastra di terreno quadrata con collisione. Il lato si imposta con `MapSizeMeters` (default 2000 m). Include la porta come attore figlio.
 - `ABaseProjectDoor` (`Source/BaseProject/Public/BaseProjectDoor.h`): portale in pietra largo 9 m e alto 12 m, con stipiti a blocchi, chiave di volta e anta incernierata composta da grandi conci. Si apre quando il personaggio entra nell'area di attivazione e si richiude quando esce.
 
-In **Play** la base e la porta vengono create automaticamente dal Game Mode. Per editarle, crea una mappa in `Content/Maps`, trascina `ABaseProjectMapBase` nel livello (dalla finestra **Modes > All Classes**) e regola `MapSizeMeters`, `DoorLocation` e `DoorRotation` nei dettagli. La porta può anche essere piazzata da sola come `ABaseProjectDoor`.
+Il generatore `Content/Python/CreateStarterMap.py` crea una mappa persistente con la base, la porta, il punto di partenza e l'illuminazione. Dopo averla generata, puoi regolare `MapSizeMeters`, `DoorLocation` e `DoorRotation` selezionando `ABaseProjectMapBase` nei dettagli. La porta può anche essere piazzata da sola come `ABaseProjectDoor`. In **Play**, il Game Mode aggiunge la base o il `PlayerStart` solo se mancano, evitando duplicati.
 
 ## Comandi
 
@@ -75,6 +77,8 @@ Config/
 Content/
   Blueprints/
   Maps/
+  Python/
+    CreateStarterMap.py
 Source/
   BaseProject.Target.cs
   BaseProjectEditor.Target.cs
@@ -88,7 +92,7 @@ Le directory `Binaries`, `DerivedDataCache`, `Intermediate` e `Saved` vengono cr
 
 ## Prossimi passi consigliati
 
-1. Crea e salva una mappa del progetto in `Content/Maps`.
+1. Esegui `Content/Python/CreateStarterMap.py` dall'Editor per generare `StarterMap.umap`.
 2. Crea un Blueprint derivato da `ABaseProjectCharacter` per aggiungere mesh, animazioni e audio.
 3. Crea un Blueprint derivato da `ABaseProjectGameMode` e assegnalo alla mappa.
 4. Per un progetto più complesso, migra gli input a **Enhanced Input** con `Input Action` e `Input Mapping Context` come asset.
